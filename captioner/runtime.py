@@ -18,6 +18,7 @@ import zipfile
 from PIL import Image, ImageOps
 
 from .core import parse_analysis
+from .paths import cache_directory
 
 CATALOG = json.loads(Path(__file__).with_name("catalog.json").read_text(encoding="utf-8"))
 PROMPT_VERSION = "analysis-v2"
@@ -129,8 +130,7 @@ def extract_zip(archive: Path, target: Path) -> None:
 
 class LocalRuntime:
     def __init__(self, cache: Path | None = None):
-        default_cache = Path(os.environ.get("LORA_CAPTIONER_CACHE", str(Path(__file__).resolve().parent.parent / ".local-cache")))
-        self.cache = (cache or default_cache).resolve()
+        self.cache = (cache or cache_directory()).resolve()
         self.process: subprocess.Popen | None = None
         self.log = None
         self.base_url = ""

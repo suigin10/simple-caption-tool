@@ -4,9 +4,11 @@ Windows向けの独立したPySide6アプリです。キャラクターLoRA／�
 
 ## 起動
 
-このフォルダーの **`simple-caption-tool.cmd` をダブルクリック**してください。GUIはコンソールなしのPythonで別プロセスとして起動し、起動用のコマンド画面は閉じます。初回セットアップ中やセットアップ失敗時はコマンド画面を表示します。
+**Windowsバイナリ版:** リリースの `simple-caption-tool-v0.1.0-windows-x64.zip` をフォルダーごと展開し、`simple-caption-tool.exe` をダブルクリックしてください。Pythonのインストールは不要です。`_internal` を含む同梱ファイルを移動・削除せず使ってください。
 
-別のPCではWindows x64とPython 3.11以降が必要です。初回起動時にGUI依存関係を導入します。現在はソース実行版で、Python不要の配布用EXEはまだ作成していません。
+**ソース版:** このフォルダーの **`simple-caption-tool.cmd` をダブルクリック**してください。GUIはコンソールなしのPythonで別プロセスとして起動し、起動用のコマンド画面は閉じます。初回セットアップ中やセットアップ失敗時はコマンド画面を表示します。
+
+別のPCではWindows x64とPython 3.11以降が必要です。初回起動時にGUI依存関係を導入します。ソース版の起動にはPythonが必要です。バイナリ版では実行環境を同梱しています。
 
 手動セットアップ:
 
@@ -91,3 +93,14 @@ JSONには画像相対パス、SHA-256、解析結果、モデルの生出力、
 評価コマンドは既定で赤い長方形と青い円の合成画像を作り、実機推論・JSON検証・6種類の出力を記録します。`--image` でローカル画像を指定できます。これは接続・動作試験で、成人向け画像やキャラクター／画風データセットでの品質評価とは区別しています。
 
 [実装計画・制限](docs/PLAN.md) ／ [モデル調査・ライセンス](docs/MODELS.md) ／ [動作確認結果](docs/VALIDATION.md) ／ [画面プレビュー](docs/gui-preview.png)
+
+## Windowsバイナリの再ビルド
+
+Python 3.12環境に依存関係とPyInstaller 6.21.0を用意して、以下を実行します。
+
+```powershell
+python -m pip install -e . pyinstaller==6.21.0
+python tools/build_windows.py --dist dist --work build
+```
+
+`dist/simple-caption-tool/` をフォルダーごと配布します。モデルと推論エンジンは含めず、初回解析時に取得します。設定とキャッシュはEXEの隣の `.local-cache` に保存します。依存ライブラリの通知は `THIRD_PARTY_NOTICES.txt` と `licenses/` にあります。Qt DLLは差し替え可能な別ファイルで同梱しています。

@@ -5,11 +5,12 @@ import os
 from pathlib import Path
 
 from .core import Settings, atomic_write
+from .paths import cache_directory
 
 
 class Preferences:
     def __init__(self, path: Path | None = None):
-        cache = Path(os.environ.get("LORA_CAPTIONER_CACHE", str(Path(__file__).resolve().parent.parent / ".local-cache")))
+        cache = cache_directory()
         self.path = path or Path(os.environ.get("LORA_CAPTIONER_PREFERENCES", str(cache / "preferences.json")))
         self.settings = Settings()
         self.allow_edited = False

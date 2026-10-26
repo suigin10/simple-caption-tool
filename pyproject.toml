@@ -11,6 +11,7 @@ dependencies = ["PySide6-Essentials>=6.8,<7", "Pillow>=11,<14"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<10"]
+build = ["PyInstaller==6.21.0"]
 
 [project.gui-scripts]
 simple-caption-tool = "captioner.gui:main"

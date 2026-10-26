@@ -1,0 +1,36 @@
+simple caption tool - third-party notices
+
+This portable bundle uses Python 3.12.10, PySide6 / Shiboken6 / Qt 6.12.0,
+and Pillow 13.0.0. No changes were made to these libraries.
+
+Qt / PySide6 / Shiboken6:
+Copyright The Qt Company Ltd. and other contributors.
+The LGPL v3 option is used for the dynamically linked modules included here.
+See licenses/LGPL-3.0-only.txt and licenses/GPL-3.0-only.txt.
+Qt DLLs and bindings remain separate in _internal and may be replaced with
+interface-compatible builds. Reverse engineering for debugging modifications
+to the LGPL-covered libraries is permitted. Application source is in source/.
+Upstream corresponding source and build information:
+https://download.qt.io/official_releases/QtForPython/pyside6/PySide6-6.12.0-src/
+https://github.com/pyside/pyside-setup/tree/v6.12.0
+https://github.com/qt/qtbase/tree/v6.12.0
+https://github.com/qt/qtsvg/tree/v6.12.0
+https://code.qt.io/cgit/qt/qtbase.git/tree/src/3rdparty?h=v6.12.0
+
+Python:
+Copyright Python Software Foundation and contributors.
+See licenses/Python-LICENSE.txt, including the bundled dependency notices.
+Source: https://www.python.org/downloads/release/python-31210/
+
+Pillow:
+Copyright Pillow contributors and the Python Imaging Library authors.
+See licenses/Pillow-LICENSE.txt, including codec/dependency notices.
+Source: https://github.com/python-pillow/Pillow/tree/13.0.0
+
+PyInstaller bootloader:
+GPL v2 or later with a special exception for generated executables.
+See licenses/PyInstaller-COPYING.txt. Source: https://github.com/pyinstaller/pyinstaller/tree/v6.21.0
+
+Windows system components / Microsoft runtime remain subject to their own terms.
+The model weights and llama.cpp / CUDA runtime are not included in this bundle;
+they are downloaded separately from the fixed upstream assets on first use.
