@@ -35,7 +35,6 @@ window.analysis_result("akari_school_001.png", {"event": "success", "analysis": 
                                        "raw": json.dumps(analysis), "model": "preview-fixture"})
 window.trigger_source.setCurrentIndex(window.trigger_source.findData("filename"))
 window.trigger_length.setValue(1)
-window.identity.setChecked(True)
 window.rebuild(True)
 window.show()
 def capture():

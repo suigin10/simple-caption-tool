@@ -42,6 +42,7 @@ class Preferences:
                 if key == "trigger_length" and not 1 <= value <= 999:
                     continue
                 setattr(self.settings, key, value)
+            self.settings.include_identity = True
             ui = data.get("ui", {})
             if not isinstance(ui, dict):
                 ui = {}

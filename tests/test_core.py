@@ -47,11 +47,11 @@ def test_roundtrip_resume_edit_protection_and_export(tmp_path, analysis):
 
 
 def test_output_modes_do_not_mix_identity_and_style(analysis):
-    assert "blue-haired" not in render(analysis, Settings())
+    assert "blue-haired" in render(analysis, Settings())
     assert "blue-haired" in render(analysis, Settings(include_identity=True))
     assert "watercolor" not in render(analysis, Settings(target="style", format="mixed"))
     assert render(analysis, Settings(format="tags", trigger="token")).startswith("token, person, sitting")
-    assert "blue hair" not in render(analysis, Settings(format="tags"))
+    assert "blue hair" in render(analysis, Settings(format="tags"))
 
 
 def test_changed_image_invalidates_analysis_preserves_edits(tmp_path, analysis):

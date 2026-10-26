@@ -65,7 +65,7 @@ class Settings:
     trigger_length: int = 1
     trigger_unit: str = "words"
     trigger_separators: str = "_-"
-    include_identity: bool = False
+    include_identity: bool = True  # Legacy field retained for old project JSON compatibility.
     model: str = "joy8b"
     gpu_layers: int = 99
     max_edge: int = 1024
@@ -92,10 +92,8 @@ def resolve_trigger(settings: Settings, image_path: str | None = None) -> str:
 
 def render(analysis: dict, settings: Settings, image_path: str | None = None) -> str:
     if settings.target == "character":
-        prose = analysis["description" if settings.include_identity else "character_description"]
-        tags = list(analysis["content_tags"]) + list(analysis["style_tags"])
-        if settings.include_identity:
-            tags += analysis["appearance_tags"]
+        prose = analysis["description"]
+        tags = list(analysis["content_tags"]) + list(analysis["appearance_tags"]) + list(analysis["style_tags"])
     else:
         prose = analysis["style_description"]
         tags = list(analysis["content_tags"]) + list(analysis["appearance_tags"])
@@ -142,6 +140,9 @@ class Project:
                 if record.status == "running":
                     record.status = "pending"
                 self.records[record.path] = record
+        # Earlier versions allowed suppressing hair/eye color. The current policy
+        # always preserves visible appearance in natural-language and tag output.
+        self.settings.include_identity = True
         self.scan()
 
     def scan(self) -> None:

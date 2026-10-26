@@ -181,8 +181,9 @@ class MainWindow(QMainWindow):
         model_row.addWidget(QLabel("解析画像の最大辺"))
         model_row.addWidget(self.edge)
         form.addRow("解析モデル", model_row)
-        self.identity = QCheckBox("キャラクターの固定的な外見も記述する（髪色・目の色など）")
-        form.addRow("記述内容", self.identity)
+        self.appearance_hint = QLabel("目の色・髪色・髪型・服装を、タグ・自然文の両方で記述します。")
+        self.appearance_hint.setWordWrap(True)
+        form.addRow("記述内容", self.appearance_hint)
         self.mode_hint = QLabel()
         self.mode_hint.setWordWrap(True)
         form.addRow("", self.mode_hint)
@@ -280,7 +281,6 @@ class MainWindow(QMainWindow):
         for control in (self.target, self.output_format, self.model, self.edge, self.trigger_source, self.trigger_unit):
             control.currentIndexChanged.connect(self.settings_changed)
         self.layers.valueChanged.connect(self.settings_changed)
-        self.identity.toggled.connect(self.settings_changed)
         self.trigger.textChanged.connect(self.settings_changed)
         self.trigger_length.valueChanged.connect(self.settings_changed)
         self.trigger_separators.textChanged.connect(self.settings_changed)
@@ -373,7 +373,7 @@ class MainWindow(QMainWindow):
         return Settings(target=self.target.currentData(), format=self.output_format.currentData(),
                         trigger=self.trigger.text(), trigger_source=self.trigger_source.currentData(),
                         trigger_length=self.trigger_length.value(), trigger_unit=self.trigger_unit.currentData(),
-                        trigger_separators=self.trigger_separators.text(), include_identity=self.identity.isChecked(),
+                        trigger_separators=self.trigger_separators.text(), include_identity=True,
                         model=self.model.currentData(), gpu_layers=self.layers.value(), max_edge=self.edge.currentData())
 
     def apply_settings(self, settings: Settings):
@@ -385,7 +385,6 @@ class MainWindow(QMainWindow):
         self.trigger.setText(settings.trigger)
         self.trigger_length.setValue(settings.trigger_length)
         self.trigger_separators.setText(settings.trigger_separators)
-        self.identity.setChecked(settings.include_identity)
         self.layers.setValue(settings.gpu_layers)
         self.loading = False
 
@@ -407,11 +406,9 @@ class MainWindow(QMainWindow):
 
     def settings_changed(self, *_):
         if self.target.currentData() == "character":
-            self.mode_hint.setText("固定外見も含め、服装・ポーズ・背景などを記述します。" if self.identity.isChecked()
-                                   else "固定外見を省き、服装・ポーズ・背景などを記述します。")
+            self.mode_hint.setText("見える外見を省略せず、人物ごとの特徴を対応させます。判別できない色は推測しません。")
         else:
             self.mode_hint.setText("画材・筆致・配色・画風の記述を省き、被写体や構図を記述します。")
-        self.identity.setEnabled(self.target.currentData() == "character")
         filename_trigger = self.trigger_source.currentData() == "filename"
         self.trigger.setEnabled(not filename_trigger)
         self.trigger_length.setEnabled(filename_trigger)
