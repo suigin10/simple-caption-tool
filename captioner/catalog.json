@@ -1,0 +1,55 @@
+{
+  "runtime": {
+    "version": "b11887",
+    "assets": [
+      {
+        "name": "cudart-llama-bin-win-cuda-12.4-x64.zip",
+        "url": "https://github.com/ggml-org/llama.cpp/releases/download/b11887/cudart-llama-bin-win-cuda-12.4-x64.zip",
+        "size": 391443627,
+        "sha256": "8c79a9b226de4b3cacfd1f83d24f962d0773be79f1e7b75c6af4ded7e32ae1d6"
+      },
+      {
+        "name": "llama-b11887-bin-win-cuda-12.4-x64.zip",
+        "url": "https://github.com/ggml-org/llama.cpp/releases/download/b11887/llama-b11887-bin-win-cuda-12.4-x64.zip",
+        "size": 279405352,
+        "sha256": "de6805092f1bf48e2587d083f522e6fd2d8254ee5eadfb16061516fb8dd82892"
+      }
+    ]
+  },
+  "models": {
+    "qwen4b": {
+      "label": "Qwen3-VL-4B Huihui Q4_K_M",
+      "assets": [
+        {
+          "name": "Huihui-Qwen3-VL-4B-Instruct-abliterated-Q4_K_M.gguf",
+          "url": "https://huggingface.co/noctrex/Huihui-Qwen3-VL-4B-Instruct-abliterated-GGUF/resolve/0e204140ef43727fb4ee4d4bbd88c948c64719df/Huihui-Qwen3-VL-4B-Instruct-abliterated-Q4_K_M.gguf",
+          "size": 2497282240,
+          "sha256": "9789bbc02e77bf3b9cfe7b54a6b212a1e8904ffc77df61243353a05fcb203167"
+        },
+        {
+          "name": "mmproj-F16.gguf",
+          "url": "https://huggingface.co/noctrex/Huihui-Qwen3-VL-4B-Instruct-abliterated-GGUF/resolve/0e204140ef43727fb4ee4d4bbd88c948c64719df/mmproj-F16.gguf",
+          "size": 836180576,
+          "sha256": "3aedbce332390ff9c4bac496d76490d8c27e4c86b57bed9039d584853a7bfa78"
+        }
+      ]
+    },
+    "joy8b": {
+      "label": "JoyCaption Beta One Q4_K",
+      "assets": [
+        {
+          "name": "Llama-Joycaption-Beta-One-Hf-Llava-Q4_K.gguf",
+          "url": "https://huggingface.co/concedo/llama-joycaption-beta-one-hf-llava-mmproj-gguf/resolve/acfe6bf78ae4e411cd5c7c8f4a71ba01f26a5b97/Llama-Joycaption-Beta-One-Hf-Llava-Q4_K.gguf",
+          "size": 4920735936,
+          "sha256": "e8ae55dd07e61d541ab741d6ed63e7810192cea65d7ef8cda69b2a99fb06dc15"
+        },
+        {
+          "name": "llama-joycaption-beta-one-llava-mmproj-model-f16.gguf",
+          "url": "https://huggingface.co/concedo/llama-joycaption-beta-one-hf-llava-mmproj-gguf/resolve/acfe6bf78ae4e411cd5c7c8f4a71ba01f26a5b97/llama-joycaption-beta-one-llava-mmproj-model-f16.gguf",
+          "size": 877771808,
+          "sha256": "94002cb5c354c7c9e538e64f37d593db9eceeca2e94573bae6cd3b2bd8bb1952"
+        }
+      ]
+    }
+  }
+}

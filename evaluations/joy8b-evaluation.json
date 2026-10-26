@@ -1,0 +1,50 @@
+{
+  "model": "joy8b",
+  "gpu_layers": 99,
+  "prompt_version": "analysis-v1",
+  "test_image": "synthetic-shapes.png",
+  "scope": "synthetic smoke test; adult-content quality NOT tested",
+  "prepare_and_load_seconds": 103.03,
+  "inference_seconds": 3.55,
+  "analysis": {
+    "description": "A digital image with a white background and two colored shapes. On the left, there is a solid red rectangle. On the right, there is a solid blue circle. Below the shapes, the text 'RED RECTANGLE BLUE CIRCLE' is written in black, uppercase letters. The image has a gray border at the top and bottom edges.",
+    "character_description": "A red rectangle and a blue circle. The red rectangle is on the left, and the blue circle is on the right. The text 'RED RECTANGLE BLUE CIRCLE' is below the shapes.",
+    "style_description": "Two colored shapes on a white background. A red rectangle on the left and a blue circle on the right. The text 'RED RECTANGLE BLUE CIRCLE' is below the shapes.",
+    "content_tags": [
+      "red rectangle",
+      "blue circle",
+      "text",
+      "white background",
+      "gray border"
+    ],
+    "appearance_tags": [
+      "red",
+      "blue",
+      "rectangle",
+      "circle",
+      "text",
+      "white background",
+      "gray border"
+    ],
+    "style_tags": [
+      "digital image",
+      "two shapes",
+      "red color",
+      "blue color",
+      "rectangle shape",
+      "circle shape",
+      "text on image"
+    ]
+  },
+  "raw": "{\n  \"description\": \"A digital image with a white background and two colored shapes. On the left, there is a solid red rectangle. On the right, there is a solid blue circle. Below the shapes, the text 'RED RECTANGLE BLUE CIRCLE' is written in black, uppercase letters. The image has a gray border at the top and bottom edges.\",\n  \"character_description\": \"A red rectangle and a blue circle. The red rectangle is on the left, and the blue circle is on the right. The text 'RED RECTANGLE BLUE CIRCLE' is below the shapes.\",\n  \"style_description\": \"Two colored shapes on a white background. A red rectangle on the left and a blue circle on the right. The text 'RED RECTANGLE BLUE CIRCLE' is below the shapes.\",\n  \"content_tags\": [\"red rectangle\", \"blue circle\", \"text\", \"white background\", \"gray border\"],\n  \"appearance_tags\": [\"red\", \"blue\", \"rectangle\", \"circle\", \"text\", \"white background\", \"gray border\"],\n  \"style_tags\": [\"digital image\", \"two shapes\", \"red color\", \"blue color\", \"rectangle shape\", \"circle shape\", \"text on image\"]\n}",
+  "status": "passed",
+  "outputs": {
+    "character_natural": "A red rectangle and a blue circle. The red rectangle is on the left, and the blue circle is on the right. The text 'RED RECTANGLE BLUE CIRCLE' is below the shapes.",
+    "character_tags": "red rectangle, blue circle, text, white background, gray border, digital image, two shapes, red color, blue color, rectangle shape, circle shape, text on image",
+    "character_mixed": "A red rectangle and a blue circle. The red rectangle is on the left, and the blue circle is on the right. The text 'RED RECTANGLE BLUE CIRCLE' is below the shapes.\nred rectangle, blue circle, text, white background, gray border, digital image, two shapes, red color, blue color, rectangle shape, circle shape, text on image",
+    "style_natural": "Two colored shapes on a white background. A red rectangle on the left and a blue circle on the right. The text 'RED RECTANGLE BLUE CIRCLE' is below the shapes.",
+    "style_tags": "red rectangle, blue circle, text, white background, gray border, red, blue, rectangle, circle",
+    "style_mixed": "Two colored shapes on a white background. A red rectangle on the left and a blue circle on the right. The text 'RED RECTANGLE BLUE CIRCLE' is below the shapes.\nred rectangle, blue circle, text, white background, gray border, red, blue, rectangle, circle"
+  },
+  "gpu_snapshot": "NVIDIA GeForce RTX 4070, 8166 MiB, 12282 MiB"
+}

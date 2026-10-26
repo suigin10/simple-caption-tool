@@ -1,0 +1,43 @@
+{
+  "model": "qwen4b",
+  "gpu_layers": 99,
+  "prompt_version": "analysis-v1",
+  "test_image": "synthetic-shapes.png",
+  "scope": "synthetic smoke test; adult-content quality NOT tested",
+  "prepare_and_load_seconds": 5.5,
+  "inference_seconds": 2.31,
+  "analysis": {
+    "description": "A red rectangle and a blue circle are positioned side by side on a plain white background. Below the shapes, the text \"RED RECTANGLE BLUE CIRCLE\" is displayed in black, uppercase letters. The image is a simple, flat, digital illustration with no shading or texture.",
+    "character_description": "There are no characters present in the image. The image contains two geometric shapes: a red rectangle and a blue circle. The shapes are static and positioned side by side. The text below them is in black, uppercase letters.",
+    "style_description": "The image contains two geometric shapes: a red rectangle and a blue circle. The shapes are positioned side by side on a white background. Below the shapes, there is text in black, uppercase letters. The composition is simple and flat, with no additional elements or context.",
+    "content_tags": [
+      "red rectangle",
+      "blue circle",
+      "white background",
+      "black text",
+      "uppercase letters",
+      "side by side",
+      "flat composition"
+    ],
+    "appearance_tags": [],
+    "style_tags": [
+      "digital illustration",
+      "flat design",
+      "no texture",
+      "no shading",
+      "minimalist",
+      "simple composition"
+    ]
+  },
+  "raw": "{\n  \"description\": \"A red rectangle and a blue circle are positioned side by side on a plain white background. Below the shapes, the text \\\"RED RECTANGLE BLUE CIRCLE\\\" is displayed in black, uppercase letters. The image is a simple, flat, digital illustration with no shading or texture.\",\n  \"character_description\": \"There are no characters present in the image. The image contains two geometric shapes: a red rectangle and a blue circle. The shapes are static and positioned side by side. The text below them is in black, uppercase letters.\",\n  \"style_description\": \"The image contains two geometric shapes: a red rectangle and a blue circle. The shapes are positioned side by side on a white background. Below the shapes, there is text in black, uppercase letters. The composition is simple and flat, with no additional elements or context.\",\n  \"content_tags\": [\n    \"red rectangle\",\n    \"blue circle\",\n    \"white background\",\n    \"black text\",\n    \"uppercase letters\",\n    \"side by side\",\n    \"flat composition\"\n  ],\n  \"appearance_tags\": [],\n  \"style_tags\": [\n    \"digital illustration\",\n    \"flat design\",\n    \"no texture\",\n    \"no shading\",\n    \"minimalist\",\n    \"simple composition\"\n  ]\n}",
+  "status": "passed",
+  "outputs": {
+    "character_natural": "There are no characters present in the image. The image contains two geometric shapes: a red rectangle and a blue circle. The shapes are static and positioned side by side. The text below them is in black, uppercase letters.",
+    "character_tags": "red rectangle, blue circle, white background, black text, uppercase letters, side by side, flat composition, digital illustration, flat design, no texture, no shading, minimalist, simple composition",
+    "character_mixed": "There are no characters present in the image. The image contains two geometric shapes: a red rectangle and a blue circle. The shapes are static and positioned side by side. The text below them is in black, uppercase letters.\nred rectangle, blue circle, white background, black text, uppercase letters, side by side, flat composition, digital illustration, flat design, no texture, no shading, minimalist, simple composition",
+    "style_natural": "The image contains two geometric shapes: a red rectangle and a blue circle. The shapes are positioned side by side on a white background. Below the shapes, there is text in black, uppercase letters. The composition is simple and flat, with no additional elements or context.",
+    "style_tags": "red rectangle, blue circle, white background, black text, uppercase letters, side by side, flat composition",
+    "style_mixed": "The image contains two geometric shapes: a red rectangle and a blue circle. The shapes are positioned side by side on a white background. Below the shapes, there is text in black, uppercase letters. The composition is simple and flat, with no additional elements or context.\nred rectangle, blue circle, white background, black text, uppercase letters, side by side, flat composition"
+  },
+  "gpu_snapshot": "NVIDIA GeForce RTX 4070, 6276 MiB, 12282 MiB"
+}
