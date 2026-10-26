@@ -184,6 +184,9 @@ class MainWindow(QMainWindow):
         self.appearance_hint = QLabel("目の色・髪色・髪型・服装を、タグ・自然文の両方で記述します。")
         self.appearance_hint.setWordWrap(True)
         form.addRow("記述内容", self.appearance_hint)
+        self.detailed_hair = QCheckBox("髪型を詳細解析（頭部の追加解析・処理時間が増えます）")
+        self.detailed_hair.setToolTip("全体解析の後、頭部を特定して拡大し、前髪・分け目・サイドの毛束などを追加解析します。見える頭部は最大4人まで。画像はPC内だけで処理します。")
+        form.addRow("髪型の細部", self.detailed_hair)
         self.mode_hint = QLabel()
         self.mode_hint.setWordWrap(True)
         form.addRow("", self.mode_hint)
@@ -284,6 +287,7 @@ class MainWindow(QMainWindow):
         self.trigger.textChanged.connect(self.settings_changed)
         self.trigger_length.valueChanged.connect(self.settings_changed)
         self.trigger_separators.textChanged.connect(self.settings_changed)
+        self.detailed_hair.toggled.connect(self.settings_changed)
         self.allow_edited.toggled.connect(self.settings_changed)
         self.overwrite_txt.toggled.connect(self.settings_changed)
         self.filter.currentIndexChanged.connect(self.settings_changed)
@@ -374,6 +378,7 @@ class MainWindow(QMainWindow):
                         trigger=self.trigger.text(), trigger_source=self.trigger_source.currentData(),
                         trigger_length=self.trigger_length.value(), trigger_unit=self.trigger_unit.currentData(),
                         trigger_separators=self.trigger_separators.text(), include_identity=True,
+                        detailed_hair=self.detailed_hair.isChecked(),
                         model=self.model.currentData(), gpu_layers=self.layers.value(), max_edge=self.edge.currentData())
 
     def apply_settings(self, settings: Settings):
@@ -386,6 +391,7 @@ class MainWindow(QMainWindow):
         self.trigger_length.setValue(settings.trigger_length)
         self.trigger_separators.setText(settings.trigger_separators)
         self.layers.setValue(settings.gpu_layers)
+        self.detailed_hair.setChecked(settings.detailed_hair)
         self.loading = False
 
     def load_thumbnails(self):
@@ -532,7 +538,7 @@ class MainWindow(QMainWindow):
             record.history.append({"at": now(), "previous_caption": record.caption, **event})
             if kind == "success":
                 record.analysis = event["analysis"]
-                record.status, record.error = "done", ""
+                record.status, record.error = "done", event.get("warning", "")
                 if not record.edited or self.allow_edited.isChecked():
                     record.caption = render(record.analysis, self.project.settings, record.path)
                     record.edited = False

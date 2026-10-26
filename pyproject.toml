@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "simple-caption-tool"
-version = "0.1.1"
+version = "0.1.2"
 description = "Local Windows caption editor for character and style LoRA datasets"
 requires-python = ">=3.11"
 dependencies = ["PySide6-Essentials>=6.8,<7", "Pillow>=11,<14"]

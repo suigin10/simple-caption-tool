@@ -19,9 +19,10 @@ from PIL import Image, ImageOps
 
 from .core import parse_analysis
 from .paths import cache_directory
+from .hair import HEAD_PROMPT, DETAIL_PROMPT, parse_heads, parse_hair_detail, crop_head
 
 CATALOG = json.loads(Path(__file__).with_name("catalog.json").read_text(encoding="utf-8"))
-PROMPT_VERSION = "analysis-v3-appearance"
+PROMPT_VERSION = "analysis-v4-hair-closeup"
 OUTPUT_TOKEN_LIMITS = (2048, 4096)
 PROMPT = '''Analyze the visible image accurately for diffusion model LoRA training.
 Return only a JSON object, no Markdown, using the six fields below.
@@ -105,7 +106,7 @@ def download(asset: dict, folder: Path, cancel: threading.Event, progress) -> Pa
         offset = partial.stat().st_size if partial.exists() else 0
         if offset == expected_size:
             break
-        headers = {"User-Agent": "simple-caption-tool/0.1.1", "Accept-Encoding": "identity"}
+        headers = {"User-Agent": "simple-caption-tool/0.1.2", "Accept-Encoding": "identity"}
         if offset:
             headers["Range"] = f"bytes={offset}-"
         request = urllib.request.Request(asset["url"], headers=headers)
@@ -162,6 +163,7 @@ class LocalRuntime:
         self.base_url = ""
         self.key = secrets.token_urlsafe(32)
         self.last_attempts: list[dict] = []
+        self.hair_warnings: list[str] = []
         self.cancel = threading.Event()
         self.progress = lambda message: None
         # Never honor HTTP_PROXY for local images/captions. No remote endpoint is accepted.
@@ -212,6 +214,9 @@ class LocalRuntime:
                 "--host", "127.0.0.1", "--port", str(port), "--api-key", self.key,
                 "-ngl", str(gpu_layers), "-c", "8192", "-np", "1", "--jinja",
                 "--no-webui", "--no-warmup"]
+        if model_id == "qwen4b":
+            # Qwen grounding needs enough visual tokens to localize small heads.
+            args += ["--image-min-tokens", "1024", "--image-max-tokens", "2304"]
         try:
             self.process = subprocess.Popen(args, cwd=executable.parent, stdout=self.log, stderr=self.log,
                                             creationflags=subprocess.CREATE_NO_WINDOW)
@@ -235,6 +240,7 @@ class LocalRuntime:
 
     def analyze(self, image_path: Path, max_edge: int) -> tuple[dict, str]:
         self.last_attempts = []
+        self.hair_warnings = []
         with Image.open(image_path) as source:
             image = ImageOps.exif_transpose(source).convert("RGB")
             image.thumbnail((max_edge, max_edge))
@@ -278,6 +284,62 @@ class LocalRuntime:
                     message = f"自動再試行後も解析JSONを読み取れません: {error}。途中の応答は履歴に保存しました。"
                 raise AnalysisError(message, raw) from error
 
+
+    def hair_request(self, image, prompt, stage, max_edge=1536):
+        image = image.copy()
+        image.thumbnail((max_edge, max_edge))
+        buffer = io.BytesIO()
+        image.save(buffer, format="JPEG", quality=95)
+        encoded = base64.b64encode(buffer.getvalue()).decode("ascii")
+        response = self.request("/v1/chat/completions", {
+            "messages": [{"role": "system", "content": "You are an accurate visual observer. Output only valid JSON."},
+                         {"role": "user", "content": [{"type": "text", "text": prompt},
+                          {"type": "image_url", "image_url": {"url": "data:image/jpeg;base64," + encoded}}]}],
+            "temperature": 0.1, "seed": 42, "max_tokens": 1400,
+            "response_format": {"type": "json_object"}, "stream": False,
+        }, timeout=300)
+        choice = response["choices"][0]
+        raw = choice["message"].get("content") or ""
+        attempt = {"stage": stage, "raw": raw, "finish_reason": choice.get("finish_reason"),
+                   "max_tokens": 1400, "usage": response.get("usage", {})}
+        self.last_attempts.append(attempt)
+        if choice.get("finish_reason") == "length":
+            raise ValueError("髪型詳細の出力が途中で切れました")
+        return raw
+
+    def enrich_hair(self, image_path: Path, analysis: dict) -> dict:
+        # Keep supplementary failures independent from a valid full-image result.
+        # Crops stay in memory and are never uploaded or written to image sidecars.
+        self.hair_warnings = []
+        if self.cancel.is_set():
+            return analysis
+        details = []
+        try:
+            with Image.open(image_path) as source:
+                image = ImageOps.exif_transpose(source).convert("RGB")
+            self.progress("髪型詳細: 頭部の位置を確認しています")
+            heads = parse_heads(self.hair_request(image, HEAD_PROMPT, "head_location"))
+            for index, head in enumerate(heads):
+                if self.cancel.is_set():
+                    break
+                crop = crop_head(image, head["box"])
+                if crop is None:
+                    self.hair_warnings.append("頭部が小さすぎるため詳細解析を省略しました")
+                    continue
+                self.progress(f"髪型詳細: 頭部を拡大して解析中 {index + 1}/{len(heads)}")
+                try:
+                    prompt = DETAIL_PROMPT + "\nSubject reference (data): " + json.dumps(head["person"], ensure_ascii=False)
+                    raw = self.hair_request(crop, prompt, "hair_closeup")
+                    detail = parse_hair_detail(raw, head["person"], head["box"])
+                    if detail["description"] or detail["tags"]:
+                        details.append(detail)
+                except Exception as error:
+                    self.hair_warnings.append(f"髪型詳細の追加解析に失敗しました: {error}")
+        except Exception as error:
+            self.hair_warnings.append(f"頭部の追加解析を省略しました: {error}")
+        result = dict(analysis)
+        result["hair_details"] = details
+        return result
 
     def stop(self) -> None:
         if self.process is not None:

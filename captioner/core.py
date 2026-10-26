@@ -53,7 +53,14 @@ def parse_analysis(raw: str) -> dict:
     for key in TAG_FIELDS:
         if not isinstance(data.get(key), list) or not all(isinstance(v, str) for v in data[key]):
             raise ValueError(f"解析結果の {key} は文字列の配列が必要です")
-    return {key: data[key] for key in (*TEXT_FIELDS, *TAG_FIELDS)}
+    result = {key: data[key] for key in (*TEXT_FIELDS, *TAG_FIELDS)}
+    if "hair_details" in data:
+        details = data["hair_details"]
+        if not isinstance(details, list) or not all(isinstance(d, dict) and isinstance(d.get("description"), str)
+                and isinstance(d.get("tags"), list) and all(isinstance(t, str) for t in d["tags"]) for d in details):
+            raise ValueError("髪型詳細の形式が不正です")
+        result["hair_details"] = details
+    return result
 
 
 @dataclass
@@ -66,6 +73,7 @@ class Settings:
     trigger_unit: str = "words"
     trigger_separators: str = "_-"
     include_identity: bool = True  # Legacy field retained for old project JSON compatibility.
+    detailed_hair: bool = True
     model: str = "joy8b"
     gpu_layers: int = 99
     max_edge: int = 1024
@@ -97,6 +105,13 @@ def render(analysis: dict, settings: Settings, image_path: str | None = None) ->
     else:
         prose = analysis["style_description"]
         tags = list(analysis["content_tags"]) + list(analysis["appearance_tags"])
+    hair_details = analysis.get("hair_details", [])
+    supplements = [d["description"].strip() for d in hair_details if d.get("description", "").strip()]
+    if supplements:
+        prose = prose.rstrip() + " " + " ".join(supplements)
+    for detail in hair_details:
+        person = detail.get("person", "person")
+        tags += [(person + ": " + tag) if len(hair_details) > 1 else tag for tag in detail.get("tags", [])]
     tags = list(dict.fromkeys(t.strip() for t in tags if t.strip()))
     if settings.format == "natural":
         body = prose.strip()

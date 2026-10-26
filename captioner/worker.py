@@ -39,12 +39,16 @@ class AnalysisWorker(QThread):
                     if fingerprint(path) != expected_fingerprint:
                         raise ValueError("画像が変更されています。フォルダーを開き直してください")
                     analysis, raw = self.runtime.analyze(path, self.settings.max_edge)
+                    if self.settings.detailed_hair and hasattr(self.runtime, "enrich_hair"):
+                        analysis = self.runtime.enrich_hair(path, analysis)
                     if fingerprint(path) != expected_fingerprint:
                         raise ValueError("解析中に画像が変更されました。再解析してください")
                     self.result.emit(key, {"event": "success", "analysis": analysis, "raw": raw,
                                            "model": self.settings.model, "prompt_version": PROMPT_VERSION,
                                            "fingerprint": expected_fingerprint,
                                            "max_edge": self.settings.max_edge,
+                                           "detailed_hair": self.settings.detailed_hair,
+                                           "warning": "\n".join(getattr(self.runtime, "hair_warnings", [])),
                                            "attempts": list(getattr(self.runtime, "last_attempts", []))})
                 except Exception as error:
                     self.result.emit(key, {"event": "error", "error": str(error),

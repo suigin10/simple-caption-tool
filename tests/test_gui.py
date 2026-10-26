@@ -211,3 +211,14 @@ def test_all_reanalysis_includes_done_and_hidden_images_and_protects_edits(tmp_p
     assert window.all_button.isEnabled()
     window.close()
     APP.processEvents()
+
+
+def test_hair_detail_option_is_saved_and_restored(tmp_path):
+    window = MainWindow()
+    assert window.detailed_hair.isChecked()
+    window.detailed_hair.setChecked(False)
+    window.close()
+    restored = MainWindow()
+    assert not restored.detailed_hair.isChecked()
+    restored.close()
+    APP.processEvents()
